@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #222;
+            padding: 15px;
+            text-align: center;
+        }
+        .navbar a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .navbar a:hover {
+            color: yellow;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+
+        /* HOME IMAGE */
+        .banner {
+            width: 100%;
+            height: 400px;
+            background: url('https://picsum.photos/1200/500') no-repeat center;
+            background-size: cover;
+        }
+
+        /* FORM */
+        .form-box {
+            width: 350px;
+            margin: 40px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: green;
+            color: white;
+        }
+
+        .clear-btn {
+            background: red;
+            color: white;
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <a onclick="showSection('home')">Home</a>
+    <a onclick="showSection('contact')">Contact</a>
+</div>
+
+<!-- HOME SECTION -->
+<div id="home" class="section active">
+    <div class="banner"></div>
+</div>
+
+<!-- CONTACT SECTION -->
+<div id="contact" class="section">
+    <div class="form-box">
+        <h2>Contact Form</h2>
+
+        <form id="contactForm">
+            <input type="text" name="name" placeholder="Enter Name" required>
+            <input type="email" name="email" placeholder="Enter Email" required>
+            <input type="tel" name="phone" placeholder="Enter Phone">
+
+            <select name="option">
+                <option value="General Inquiry">General Inquiry</option>
+                <option value="Support">Support</option>
+                <option value="Feedback">Feedback</option>
+            </select>
+
+            <textarea name="message" placeholder="Your Message"></textarea>
+
+            <button type="submit" class="submit-btn">Submit</button>
+            <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+        </form>
+    </div>
+</div>
+
+<script>
+/* SWITCH PAGES */
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+}
+
+/* FORM SUBMIT */
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  var data = {
+    name: document.querySelector("input[name='name']").value,
+    email: document.querySelector("input[name='email']").value,
+    phone: document.querySelector("input[name='phone']").value,
+    option: document.querySelector("select[name='option']").value,
+    message: document.querySelector("textarea[name='message']").value
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbxWZdTv82RrvvNK98wRC7X3a_T-7zLP9Q4V5bPgFeGrhM7c1iF0g6xZlDp03aDVtG6Swg/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.text())
+  .then(() => {
+    alert("Submitted Successfully!");
+    document.getElementById("contactForm").reset();
+  });
+});
+
+/* CLEAR BUTTON */
+function clearForm() {
+    document.getElementById("contactForm").reset();
+}
+</script>
+
+</body>
+</html>
