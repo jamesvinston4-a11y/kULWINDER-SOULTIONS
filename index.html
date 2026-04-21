@@ -3,39 +3,54 @@
 <head>
     <title>My Website</title>
 
+    <!-- ✅ Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #f2f2f2;
+        body { margin: 0; font-family: Arial; }
+
+        #loginPage {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #222;
         }
 
-        /* NAVBAR */
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .login-box input {
+            display: block;
+            width: 220px;
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        #mainSite { display: none; }
+
         .navbar {
             background: #222;
             padding: 15px;
             text-align: center;
         }
+
         .navbar a {
             color: white;
-            margin: 0 20px;
-            text-decoration: none;
-            font-size: 18px;
+            margin: 0 15px;
             cursor: pointer;
-        }
-        .navbar a:hover {
-            color: yellow;
+            font-size: 18px;
         }
 
-        /* SECTIONS */
-        .section {
-            display: none;
-        }
-        .active {
-            display: block;
-        }
+        .navbar a:hover { color: yellow; }
 
-        /* HOME IMAGE */
+        .section { display: none; }
+        .active { display: block; }
+
         .banner {
             width: 100%;
             height: 400px;
@@ -43,115 +58,253 @@
             background-size: cover;
         }
 
-        /* FORM */
         .form-box {
-            width: 350px;
+            width: 400px;
             margin: 40px auto;
             padding: 25px;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            box-shadow: 0 0 10px #ccc;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 5px;
+            padding: 10px;
+            margin-top: 5px;
             cursor: pointer;
         }
 
-        .submit-btn {
-            background: green;
-            color: white;
-        }
+        .submit-btn { background: green; color: white; }
+        .clear-btn { background: red; color: white; }
 
-        .clear-btn {
-            background: red;
-            color: white;
-        }
+        table { border-collapse: collapse; }
+        table th, table td { padding: 8px; text-align: center; }
     </style>
-
 </head>
+
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <a onclick="showSection('home')">Home</a>
-    <a onclick="showSection('contact')">Contact</a>
-</div>
-
-<!-- HOME SECTION -->
-<div id="home" class="section active">
-    <div class="banner"></div>
-</div>
-
-<!-- CONTACT SECTION -->
-<div id="contact" class="section">
-    <div class="form-box">
-        <h2>Contact Form</h2>
-
-        <form id="contactForm">
-            <input type="text" name="name" placeholder="Enter Name" required>
-            <input type="email" name="email" placeholder="Enter Email" required>
-            <input type="tel" name="phone" placeholder="Enter Phone">
-
-            <select name="option">
-                <option value="General Inquiry">General Inquiry</option>
-                <option value="Support">Support</option>
-                <option value="Feedback">Feedback</option>
-            </select>
-
-            <textarea name="message" placeholder="Your Message"></textarea>
-
-            <button type="submit" class="submit-btn">Submit</button>
-            <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
-        </form>
+<!-- LOGIN -->
+<div id="loginPage">
+    <div class="login-box">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="error" style="color:red;"></p>
     </div>
 </div>
 
+<!-- MAIN -->
+<div id="mainSite">
+
+    <div class="navbar">
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('contact')">Contact</a>
+        <a id="adminMenu" onclick="showSection('createUser')" style="display:none;">Create User</a>
+        <a id="viewUsersMenu" onclick="showSection('viewUsers')" style="display:none;">View Users</a>
+        <a id="dashboardMenu" onclick="showSection('dashboard')" style="display:none;">Dashboard</a>
+    </div>
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+        <div class="banner"></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="section">
+        <div class="form-box">
+            <h2>Contact Form</h2>
+            <form id="contactForm">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="phone" placeholder="Phone">
+
+                <select name="option">
+                    <option>General Inquiry</option>
+                    <option>Support</option>
+                    <option>Feedback</option>
+                </select>
+
+                <textarea name="message" placeholder="Message"></textarea>
+
+                <button type="submit" class="submit-btn">Submit</button>
+                <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CREATE USER -->
+    <div id="createUser" class="section">
+        <div class="form-box">
+            <h2>Create User</h2>
+            <input type="text" id="newUser" placeholder="Username">
+            <input type="password" id="newPass" placeholder="Password">
+            <button onclick="createUser()">Create User</button>
+        </div>
+    </div>
+
+    <!-- VIEW USERS -->
+    <div id="viewUsers" class="section">
+        <div class="form-box">
+            <h2>User List</h2>
+            <button onclick="loadUsers()">Refresh</button>
+            <table border="1" width="100%" id="userTable">
+                <tr><th>Username</th><th>Password</th></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section">
+        <div class="form-box">
+            <h2>Dashboard</h2>
+            <button onclick="loadChart()">Load Chart</button>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
 <script>
-/* SWITCH PAGES */
-function showSection(sectionId) {
+const URL = "https://script.google.com/macros/s/AKfycbwWvy4lhUBgNNt8wsxn5lQQ4rOOd_v6mJgArFBrTf_82k5qGDaK-s9AdH42TwTXjdG2EQ/exec";
+
+/* SWITCH */
+function showSection(id) {
     document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
+    document.getElementById(id).classList.add('active');
 }
 
-/* FORM SUBMIT */
-document.getElementById("contactForm").addEventListener("submit", function(e) {
-  e.preventDefault();
+/* LOGIN */
+function login() {
+    fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({
+            type: "login",
+            username: username.value.trim(),
+            password: password.value.trim()
+        })
+    })
+    .then(res => res.text())
+    .then(res => {
+        if (res === "ADMIN") {
+            openSite(true);
+        } else if (res === "USER") {
+            openSite(false);
+        } else {
+            error.innerText = "Wrong Username or Password";
+        }
+    });
+}
 
-  var data = {
-    name: document.querySelector("input[name='name']").value,
-    email: document.querySelector("input[name='email']").value,
-    phone: document.querySelector("input[name='phone']").value,
-    option: document.querySelector("select[name='option']").value,
-    message: document.querySelector("textarea[name='message']").value
-  };
+function openSite(isAdmin) {
+    loginPage.style.display = "none";
+    mainSite.style.display = "block";
 
-  fetch("https://script.google.com/macros/s/AKfycbxWZdTv82RrvvNK98wRC7X3a_T-7zLP9Q4V5bPgFeGrhM7c1iF0g6xZlDp03aDVtG6Swg/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(res => res.text())
-  .then(() => {
-    alert("Submitted Successfully!");
-    document.getElementById("contactForm").reset();
-  });
+    if (isAdmin) {
+        adminMenu.style.display = "inline";
+        viewUsersMenu.style.display = "inline";
+        dashboardMenu.style.display = "inline";
+    }
+}
+
+/* CREATE USER */
+function createUser() {
+    fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({
+            type: "createUser",
+            username: newUser.value,
+            password: newPass.value
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        newUser.value = "";
+        newPass.value = "";
+    });
+}
+
+/* LOAD USERS */
+function loadUsers() {
+    fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({ type: "getUsers" })
+    })
+    .then(res => res.json())
+    .then(data => {
+        let table = userTable;
+        table.innerHTML = "<tr><th>Username</th><th>Password</th></tr>";
+
+        data.forEach((r,i)=>{
+            if(i===0) return;
+            let row = table.insertRow();
+            row.insertCell(0).innerText = r[0];
+            row.insertCell(1).innerText = r[1];
+        });
+    });
+}
+
+/* CHART */
+let chart;
+function loadChart() {
+    fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({ type: "getFormData" })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        let count = {};
+
+        for (let i = 1; i < data.length; i++) {
+            let type = data[i][4];
+            if (!type) continue;
+            count[type] = (count[type] || 0) + 1;
+        }
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(myChart, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(count),
+                datasets: [{
+                    label: "Form Entries",
+                    data: Object.values(count)
+                }]
+            }
+        });
+    });
+}
+
+/* FORM */
+contactForm.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch(URL,{
+        method:"POST",
+        body:JSON.stringify({
+            type:"form",
+            name:this.name.value,
+            email:this.email.value,
+            phone:this.phone.value,
+            option:this.option.value,
+            message:this.message.value
+        })
+    })
+    .then(()=>{ alert("Submitted"); this.reset(); });
 });
 
-/* CLEAR BUTTON */
-function clearForm() {
-    document.getElementById("contactForm").reset();
+function clearForm(){
+    contactForm.reset();
 }
 </script>
 
